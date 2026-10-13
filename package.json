@@ -1,0 +1,51 @@
+{
+  "name": "pi-herdr-intercom",
+  "version": "0.1.0",
+  "description": "Show pi-intercom identities and message traffic in Herdr's Agents sidebar",
+  "type": "module",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test test/*.test.ts",
+    "check": "npm run typecheck && npm test"
+  },
+  "pi": {
+    "extensions": ["./src/index.ts"]
+  },
+  "keywords": [
+    "pi",
+    "pi-coding-agent",
+    "pi-extension",
+    "pi-package",
+    "herdr",
+    "pi-intercom",
+    "multi-agent"
+  ],
+  "author": "Sam Grimee",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgrimee/pi-herdr-intercom.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sgrimee/pi-herdr-intercom/issues"
+  },
+  "homepage": "https://github.com/sgrimee/pi-herdr-intercom#readme",
+  "license": "MIT",
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "^1.2.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
