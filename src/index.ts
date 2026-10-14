@@ -25,6 +25,7 @@ import {
 	oneLine as clip,
 	peerCounts,
 	peerFromInput,
+	peerIdFromLabel,
 	samePeer,
 	textOf,
 	toHerdrName,
@@ -202,10 +203,11 @@ export default function (pi: ExtensionAPI) {
 		const pname = o.peer.toLowerCase();
 		const others = herdrAgents.filter((a) => a?.pane_id !== paneId);
 		const tid = (a: any) => String(a?.tokens?.ic_id ?? "").toLowerCase();
-		// Most specific first: exact id, session file, name, then (legacy) id prefix.
+		// Most specific first: current id (or unique outbound prefix), session
+		// file, name, then legacy shortened $ic_id tokens.
 		const tests: ((a: any) => boolean)[] = [];
 		if (pid) {
-			tests.push((a) => tid(a) === pid);
+			tests.push((a) => tid(a).startsWith(pid));
 			tests.push((a) => String(a?.agent_session?.value ?? "").toLowerCase().includes(pid));
 		}
 		tests.push((a) =>
@@ -215,8 +217,10 @@ export default function (pi: ExtensionAPI) {
 		);
 		if (pid) tests.push((a) => idMatch(pid, tid(a)));
 		for (const test of tests) {
-			const hit = others.find(test);
-			if (hit) return hit;
+			const hits = others.filter(test);
+			if (hits.length === 1) return hits[0];
+			// Short timestamp-based prefixes can collide; never pick an arbitrary pane.
+			if (hits.length > 1) return undefined;
 		}
 		return undefined;
 	}
@@ -408,8 +412,8 @@ export default function (pi: ExtensionAPI) {
 
 	let changes = 0; // bumped by every traffic/owed mutation from entries
 
-	// Session id -> name, learned from inbound messages, so an outbound target
-	// typed as an id prefix ("01a134b3") is shown under the peer's name.
+	// Session id -> name, learned from inbound messages. Outbound ids and
+	// generated aliases must also resolve before we have heard from the peer.
 	const knownPeers = new Map<string, string>();
 	function resolvePeer(label: unknown): Peer {
 		const l = typeof label === "string" ? label.trim() : "";
@@ -418,7 +422,7 @@ export default function (pi: ExtensionAPI) {
 			if (n.toLowerCase() === l.toLowerCase()) return { peer: n, peerId: id };
 			if (isIdish(l) && id.toLowerCase().startsWith(l.toLowerCase())) return { peer: n, peerId: id };
 		}
-		return { peer: l };
+		return { peer: l, peerId: peerIdFromLabel(l) };
 	}
 
 	function record(at: number, dir: Direction, who: Peer, text: unknown, kind: string): void {

@@ -66,11 +66,17 @@ export function peerFromInput(input: any): string | undefined {
 /** Looks like a session id or id prefix. */
 export const isIdish = (s: string): boolean => /^[0-9a-f][0-9a-f-]{5,}$/i.test(s);
 
+/** Recover the id carried by an outbound target, including generated aliases. */
+export function peerIdFromLabel(label: string): string | undefined {
+	const id = label.replace(/^subagent-chat-/i, "");
+	return isIdish(id) && id.length >= MIN_ID_PREFIX ? id : undefined;
+}
+
 export function samePeer(a: Peer, b: Peer): boolean {
 	const an = a.peer.toLowerCase();
 	const bn = b.peer.toLowerCase();
 	if (an === bn) return true;
-	if (a.peerId && b.peerId) return a.peerId === b.peerId;
+	if (a.peerId && b.peerId) return a.peerId === b.peerId || idMatch(a.peerId, b.peerId);
 	const aid = (a.peerId ?? "").toLowerCase();
 	const bid = (b.peerId ?? "").toLowerCase();
 	return (isIdish(an) && !!bid && bid.startsWith(an)) || (isIdish(bn) && !!aid && aid.startsWith(bn));

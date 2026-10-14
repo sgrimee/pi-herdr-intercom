@@ -8,6 +8,7 @@ import {
 	oneLine,
 	peerCounts,
 	peerFromInput,
+	peerIdFromLabel,
 	samePeer,
 	textOf,
 	toHerdrName,
@@ -41,12 +42,27 @@ test("idMatch accepts full ids and long-enough prefixes only", () => {
 	assert.ok(!idMatch(id, "01a134b4"));
 });
 
+test("peerIdFromLabel extracts outbound ids and generated aliases", () => {
+	assert.equal(peerIdFromLabel("01a13b01-144a"), "01a13b01-144a");
+	assert.equal(peerIdFromLabel("subagent-chat-01a13b01-144a-7796"), "01a13b01-144a-7796");
+	assert.equal(peerIdFromLabel("SUBAGENT-CHAT-01A13B01-144A"), "01A13B01-144A");
+	assert.equal(peerIdFromLabel("01a13b"), undefined);
+	assert.equal(peerIdFromLabel("planner"), undefined);
+	assert.equal(peerIdFromLabel("?"), undefined);
+});
+
 test("samePeer matches by name, full id, or id prefix used as name", () => {
 	assert.ok(samePeer({ peer: "Planner" }, { peer: "planner" }));
 	assert.ok(samePeer({ peer: "a", peerId: "x1" }, { peer: "b", peerId: "x1" }));
 	assert.ok(!samePeer({ peer: "a", peerId: "x1" }, { peer: "b", peerId: "x2" }));
 	assert.ok(samePeer({ peer: "01a134b3" }, { peer: "worker", peerId: "01a134b3-aaaa" }));
 	assert.ok(!samePeer({ peer: "worker" }, { peer: "planner" }));
+	const id = "01a13b01-144a-7796-aa77-d6ec6d73b88d";
+	const outbound = { peer: `subagent-chat-${id.slice(0, 18)}`, peerId: id.slice(0, 18) };
+	const inbound = { peer: "reviewer", peerId: id };
+	assert.ok(samePeer(outbound, inbound));
+	assert.ok(samePeer(inbound, outbound));
+	assert.ok(!samePeer(outbound, { peer: "other", peerId: "01a13b01-21f2-7528-b7a7-8f6bf65b7d66" }));
 });
 
 test("closeOpen removes the exact id, else the oldest item for the peer", () => {

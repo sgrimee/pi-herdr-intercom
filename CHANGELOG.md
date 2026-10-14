@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Resolve outbound session IDs, short IDs and generated intercom aliases in sidebar peer labels without requiring a prior inbound message.
+- Match those outbound ID prefixes to full inbound identities when closing conversations, and leave ambiguous Herdr ID-prefix matches unresolved.
+
 ## [0.1.0] - 2026-10-13
 
 ### Added
