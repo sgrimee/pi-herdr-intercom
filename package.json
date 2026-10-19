@@ -1,6 +1,6 @@
 {
   "name": "pi-herdr-intercom",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Show pi-intercom identities and message traffic in Herdr's Agents sidebar",
   "type": "module",
   "files": [
@@ -15,10 +15,13 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "tsx --test test/*.test.ts",
-    "check": "npm run typecheck && npm test"
+    "check": "npm run typecheck && npm test",
+    "prepack": "npm run check"
   },
   "pi": {
-    "extensions": ["./src/index.ts"]
+    "extensions": [
+      "./src/index.ts"
+    ]
   },
   "keywords": [
     "pi",

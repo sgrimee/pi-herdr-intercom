@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-19
+
+### Changed
+
+- Verify typechecking and tests before packing; document the published one-command GitHub install.
+
 ### Fixed
 
 - Resolve outbound session IDs, short IDs and generated intercom aliases in sidebar peer labels without requiring a prior inbound message.

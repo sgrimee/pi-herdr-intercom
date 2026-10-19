@@ -24,8 +24,11 @@ The extension is inert outside Herdr (`HERDR_ENV`, `HERDR_SOCKET_PATH`, `HERDR_P
 ```bash
 pi install git:github.com/sgrimee/pi-herdr-intercom
 # or pin a release
-pi install git:github.com/sgrimee/pi-herdr-intercom@v0.1.0
+pi install git:github.com/sgrimee/pi-herdr-intercom@v0.1.1
 ```
+
+Published on GitHub; no npm account or separate build step is needed. Run `/reload`
+in existing Pi sessions after installation.
 
 Try it for one session without installing:
 
